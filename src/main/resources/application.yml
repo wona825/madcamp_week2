@@ -47,24 +47,6 @@ logging:
       type.descriptor.sql: trace # show parameter binding
       SQL: DEBUG
 
-security:
-  oauth2:
-    client:
-      registration:
-        kakao:
-          client-id: 7693c7ea77cba3d6df49d240e34979c4
-          redirect-uri: "http://localhost:8080/api/v1/kakao/authenticate"
-          client-authentication-method: POST
-          authorization-grant-type: authorization_code
-          scope: account_email
-          client-name: Kakao
-      provider:
-        kakao:
-          authorization_uri: https://kauth.kakao.com/oauth/authorize
-          token_uri: https://kauth.kakao.com/oauth/token
-          user-info-uri: https://kapi.kakao.com/v2/user/me
-          user_name_attribute: id
-
 application:
   security:
     jwt:
@@ -73,24 +55,12 @@ application:
       refresh-token:
         expiration: 31536000000 # 365 days
 
-
-social:
-  kakao:
-    token_uri: "https://kauth.kakao.com/oauth/token"
-    redirect_uri: "http://localhost:8080/api/kakao/authenticate/v1"
-    grant_type: "authorization_code"
-    client_id: "7693c7ea77cba3d6df49d240e34979c4"
-
-
 cloud:
   aws:
     s3:
-      bucket: bridge-image-storage
-    credentials:
-      access-key:
-      secret-key:
+      bucket: wona-s3
     region:
       static: ap-northeast-2
-      auto: false
-    stack:
-      auto: false
+    credentials:
+      secret-key: CYXVqvqLti5Fck3+MzFOpqYQ2nm5Kjy3f9lQIcgC
+      access-key: AKIAT7A43HYIMXFACMMB

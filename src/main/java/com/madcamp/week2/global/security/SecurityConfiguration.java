@@ -1,6 +1,5 @@
 package com.madcamp.week2.global.security;
 
-import com.madcamp.week2.global.auth.social.CustomOAuth2UserService;
 import com.madcamp.week2.global.security.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -26,7 +25,6 @@ public class SecurityConfiguration {
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
     private final LogoutHandler logoutHandler;
-    private final CustomOAuth2UserService customOAuth2UserService;
 
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
