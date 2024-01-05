@@ -4,7 +4,7 @@ spring:
       "local": "localDB, common"
       "server": "serverDB, common"
 
-    default: "local" # active profile
+    default: "server" # active profile
 
 ---
 spring:
