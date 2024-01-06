@@ -1,5 +1,6 @@
 package com.madcamp.week2.global.auth.social.kakao.service;
 
+import com.madcamp.week2.domain.user.entity.ProfileImg;
 import com.madcamp.week2.domain.user.entity.User;
 import com.madcamp.week2.domain.user.repository.UserRepository;
 import com.madcamp.week2.global.auth.local.data.Token;
@@ -26,20 +27,28 @@ public class CustomKakaoService {
 
     private final String KAKAO_USER_INFO_URI = "https://kapi.kakao.com/v2/user/me";
 
-    public SocialAuthenticationResponse authenticate(String email) {
+    public SocialAuthenticationResponse authenticate(KakaoUserInfo.KakaoAccount kakaoAccount) {
         // 이메일이 없을때
-        if (email == null) {
+        if (kakaoAccount.getEmail() == null) {
             throw new IllegalArgumentException("카카오 유저 정보를 찾을 수 없습니다.");
         }
 
         // 유저가 존재하지 않으면 생성
-        Optional<User> optionalUser = userRepository.findByEmail(email);
+        Optional<User> optionalUser = userRepository.findByEmail(kakaoAccount.getEmail());
+
+        String email = kakaoAccount.getEmail();
+        String nickname = kakaoAccount.getProfile().getNickname();
+        String profileImg = kakaoAccount.getProfile().getProfile_image_url();
+        ProfileImg profileImg1 = ProfileImg.builder().originalFileName(profileImg).build();
+
 
         User user;
         boolean isRegistered = true;
         if (optionalUser.isEmpty()) {
             user = User.builder()
                     .email(email)
+                    .nickname(nickname)
+                    .profileImg(profileImg1)
                     .password(null)
                     .build();
             userRepository.save(user);
@@ -58,9 +67,11 @@ public class CustomKakaoService {
         // 토큰 저장
         saveUserToken(user, jwtToken);
 
+
         return SocialAuthenticationResponse.builder()
                 .accessToken(jwtToken)
-                .refreshToken(refreshToken)
+                .nickname(nickname)
+                .profileImg(profileImg)
                 .isRegistered(isRegistered)
                 .build();
     }

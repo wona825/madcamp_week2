@@ -20,7 +20,7 @@ public class CustomKakaoController {
     @PostMapping("/authenticate/kakao/token/v1")
     public ResponseEntity<SocialAuthenticationResponse> kakaoAuthenticateByToken(@RequestBody Map<String, String> body) {
         KakaoUserInfo userInfo = customKakaoService.getKakaoInfoByToken(body.get("token"));
-        SocialAuthenticationResponse authenticationResponse = customKakaoService.authenticate(userInfo.getKakao_account().getEmail());
+        SocialAuthenticationResponse authenticationResponse = customKakaoService.authenticate(userInfo.getKakao_account());
 
         return new ResponseEntity<>(authenticationResponse, HttpStatus.OK);
     }
