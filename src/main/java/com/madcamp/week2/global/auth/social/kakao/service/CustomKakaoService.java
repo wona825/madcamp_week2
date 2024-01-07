@@ -71,6 +71,7 @@ public class CustomKakaoService {
         return SocialAuthenticationResponse.builder()
                 .accessToken(jwtToken)
                 .nickname(nickname)
+                .email(email)
                 .profileImg(profileImg)
                 .isRegistered(isRegistered)
                 .build();
