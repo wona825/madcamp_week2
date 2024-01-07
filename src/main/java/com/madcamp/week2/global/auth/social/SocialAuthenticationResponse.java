@@ -15,6 +15,7 @@ public class SocialAuthenticationResponse {
     private Boolean isRegistered;
 
     private String nickname;
+    private String email;
 
     @JsonProperty("profile_img")
     private String profileImg;
