@@ -38,7 +38,9 @@ public class CustomKakaoService {
 
         String email = kakaoAccount.getEmail();
         String nickname = kakaoAccount.getProfile().getNickname();
-        String profileImg = kakaoAccount.getProfile().getProfile_image_url();
+        KakaoUserInfo.Profile profile = kakaoAccount.getProfile();
+
+        String profileImg = profile.getProfile_image_url() == null ? "" : profile.getProfile_image_url();
         ProfileImg profileImg1 = ProfileImg.builder().originalFileName(profileImg).build();
 
 
@@ -67,12 +69,13 @@ public class CustomKakaoService {
         // 토큰 저장
         saveUserToken(user, jwtToken);
 
+        ProfileImg profileImg2 = user.getProfileImg();
 
         return SocialAuthenticationResponse.builder()
                 .accessToken(jwtToken)
-                .nickname(nickname)
-                .email(email)
-                .profileImg(profileImg)
+                .nickname(user.getNickname())
+                .email(user.getEmail())
+                .profileImg(profileImg2 == null ? "" : profileImg2.getUploadFileUrl())
                 .isRegistered(isRegistered)
                 .build();
     }
