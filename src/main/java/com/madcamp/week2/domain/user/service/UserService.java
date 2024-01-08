@@ -76,6 +76,19 @@ public class UserService {
         followRepository.save(follow);
     }
 
+    public void unFollowUser(User user, String followedEmail) {
+        User followingUser = userRepository.findById(user.getId()).orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
+
+        User followedUser = userRepository.findByEmail(followedEmail).orElseThrow(() -> new RuntimeException("팔로우 대상을 찾을 수 없습니다."));
+
+        if (followingUser == followedUser) {
+            throw new RuntimeException("유저 본인은 팔로우 취소할 수 없습니다.");
+        }
+
+        followRepository.delete(followRepository.findByFollowingAndFollowed(followingUser, followedUser)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 팔로우 입니다.")));
+    }
+
 
     public List<UserInfo> getFollowList(User user) {
         User foundUser = userRepository.findById(user.getId()).orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));

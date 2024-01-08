@@ -34,9 +34,16 @@ public class UserController {
     }
 
     @PostMapping("follow/v1")
-    public ResponseEntity<?> followUser(@AuthenticationPrincipal User user, @RequestBody Map<String, String> body) {
+    public ResponseEntity<?> followUser(@AuthenticationPrincipal User user, @RequestBody Map<String, String> requestBody) {
 
-        userService.followUser(user, body.get("followedEmail"));
+        userService.followUser(user, requestBody.get("followedEmail"));
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/unFollow/v1")
+    public ResponseEntity<?> unFollowUser(@AuthenticationPrincipal User user, @RequestBody Map<String, String> requestBody) {
+
+        userService.unFollowUser(user, requestBody.get("followedEmail"));
         return ResponseEntity.ok().build();
     }
 
