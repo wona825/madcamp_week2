@@ -44,7 +44,7 @@ public class UserService {
                 .nickname(foundUser.getNickname())
                 .build();
     }
-정
+
     public void deleteProfileImg(User user) {
         User foundUser = userRepository.findWithProfileImgById(user.getId()).orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
 
