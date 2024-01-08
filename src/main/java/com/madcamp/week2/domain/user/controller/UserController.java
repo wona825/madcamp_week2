@@ -1,5 +1,6 @@
 package com.madcamp.week2.domain.user.controller;
 
+import com.madcamp.week2.domain.user.dto.FollowedUser;
 import com.madcamp.week2.domain.user.dto.ModifyUser;
 import com.madcamp.week2.domain.user.entity.User;
 import com.madcamp.week2.domain.user.service.UserService;
@@ -9,6 +10,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/user")
@@ -21,5 +24,19 @@ public class UserController {
 
         ModifyUser.Response modifyUser = userService.modifyUser(user, requestBody);
         return ResponseEntity.ok(modifyUser);
+    }
+
+    @PostMapping("follow/v1")
+    public ResponseEntity<?> followUser(@AuthenticationPrincipal User user, @RequestBody Map<String, String> body) {
+
+        userService.followUser(user, body.get("followedEmail"));
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/follow/list/v1")
+    public ResponseEntity<?> getFollowerList(@AuthenticationPrincipal User user) {
+
+        List<FollowedUser> followList = userService.getFollowList(user);
+        return ResponseEntity.ok(followList);
     }
 }
