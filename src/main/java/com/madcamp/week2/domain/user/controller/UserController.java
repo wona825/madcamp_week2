@@ -26,6 +26,13 @@ public class UserController {
         return ResponseEntity.ok(modifyUser);
     }
 
+    @DeleteMapping("/delete/profileImg/v1")
+    public ResponseEntity<?> deleteProfileImg(@AuthenticationPrincipal User user) {
+
+        userService.deleteProfileImg(user);
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("follow/v1")
     public ResponseEntity<?> followUser(@AuthenticationPrincipal User user, @RequestBody Map<String, String> body) {
 

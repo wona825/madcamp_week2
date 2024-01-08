@@ -44,6 +44,14 @@ public class UserService {
                 .nickname(foundUser.getNickname())
                 .build();
     }
+정
+    public void deleteProfileImg(User user) {
+        User foundUser = userRepository.findWithProfileImgById(user.getId()).orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
+
+        if (foundUser.getProfileImgUrl() != null) {
+            foundUser.deleteProfileImage(awsS3Uploader);
+        }
+    }
 
     public void followUser(User user, String followedEmail) {
         User followingUser = userRepository.findById(user.getId()).orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));

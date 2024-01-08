@@ -117,6 +117,6 @@ public class User extends BaseEntity implements UserDetails {
      * @return 프로필 이미지 url
      */
     public String getProfileImgUrl() {
-        return this.profileImg != null ? this.profileImg.getUploadFileUrl() : "";
+        return this.profileImg.getUploadFileUrl();
     }
 }

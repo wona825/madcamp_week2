@@ -40,7 +40,7 @@ public class CustomKakaoService {
         String nickname = kakaoAccount.getProfile().getNickname();
         KakaoUserInfo.Profile profile = kakaoAccount.getProfile();
 
-        String profileImg = profile.getProfile_image_url() == null ? "" : profile.getProfile_image_url();
+        String profileImg = profile.getProfile_image_url() == null ? null : profile.getProfile_image_url();
         ProfileImg profileImg1 = ProfileImg.builder().originalFileName(profileImg).build();
 
 
@@ -75,7 +75,7 @@ public class CustomKakaoService {
                 .accessToken(jwtToken)
                 .nickname(user.getNickname())
                 .email(user.getEmail())
-                .profileImg(profileImg2 == null ? "" : profileImg2.getUploadFileUrl())
+                .profileImg(profileImg2 == null ? null : profileImg2.getUploadFileUrl())
                 .isRegistered(isRegistered)
                 .build();
     }
