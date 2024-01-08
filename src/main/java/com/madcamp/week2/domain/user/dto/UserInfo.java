@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class FollowedUser {
+public class UserInfo {
     private String email;
     private String nickname;
 

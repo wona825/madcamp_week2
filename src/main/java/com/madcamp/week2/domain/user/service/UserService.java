@@ -1,6 +1,6 @@
 package com.madcamp.week2.domain.user.service;
 
-import com.madcamp.week2.domain.user.dto.FollowedUser;
+import com.madcamp.week2.domain.user.dto.UserInfo;
 import com.madcamp.week2.domain.user.dto.ModifyUser;
 import com.madcamp.week2.domain.user.entity.Follow;
 import com.madcamp.week2.domain.user.entity.ProfileImg;
@@ -69,13 +69,13 @@ public class UserService {
     }
 
 
-    public List<FollowedUser> getFollowList(User user) {
+    public List<UserInfo> getFollowList(User user) {
         User foundUser = userRepository.findById(user.getId()).orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
 
         List<Follow> follows = followRepository.findByFollowingWithFollowed(foundUser);
 
-        List<FollowedUser> followList = follows.stream().map(follow ->
-                    FollowedUser.builder()
+        List<UserInfo> followList = follows.stream().map(follow ->
+                    UserInfo.builder()
                             .email(follow.getFollowed().getEmail())
                             .nickname(follow.getFollowed().getNickname())
                             .profileImg(follow.getFollowed().getProfileImgUrl())
@@ -83,5 +83,23 @@ public class UserService {
         ).toList();
 
         return followList;
+    }
+
+
+    public List<UserInfo> getUserListBySearch(User user, String search) {
+
+        userRepository.findById(user.getId()).orElseThrow(() -> new RuntimeException("접근 유저를 찾을 수 없습니다."));
+
+        List<User> usersBySearch = userRepository.findBySearch(search);
+
+        List<UserInfo> userList = usersBySearch.stream().map(userBySearch ->
+                UserInfo.builder()
+                        .email(userBySearch.getEmail())
+                        .nickname(userBySearch.getNickname())
+                        .profileImg(userBySearch.getProfileImgUrl())
+                        .build()
+        ).toList();
+
+        return userList;
     }
 }

@@ -12,7 +12,6 @@ import java.util.Optional;
 public interface FollowRepository extends JpaRepository<Follow, Long> {
     Optional<Follow> findByFollowingAndFollowed(User following, User followed);
 
-    // following을 기준으로 follow 엔티티를 찾으면서 동시에 followed를 join으로 같이 조회하는 쿼리
     @Query("SELECT f FROM Follow f JOIN FETCH f.followed WHERE f.following = :following")
     List<Follow> findByFollowingWithFollowed(@Param("following") User following);
 }
