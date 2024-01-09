@@ -30,7 +30,7 @@ public class UserService {
             foundUser.setNickname(requestBody.getNickname());
         }
 
-        if (!Objects.requireNonNull(requestBody.getProfileImg().getOriginalFilename()).isEmpty()) {
+        if (requestBody.getProfileImg() != null) {
             if (foundUser.getProfileImgUrl() != null) {
                 foundUser.deleteProfileImage(awsS3Uploader);
             }
@@ -80,9 +80,7 @@ public class UserService {
 
 
     public List<UserInfo> getFollowList(User user) {
-        User foundUser = userRepository.findById(user.getId()).orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
-
-        List<Follow> follows = followRepository.findByFollowingWithFollowed(foundUser);
+        List<Follow> follows = followRepository.findByFollowingWithFollowed(user);
 
         List<UserInfo> followList = follows.stream().map(follow ->
                     UserInfo.builder()
