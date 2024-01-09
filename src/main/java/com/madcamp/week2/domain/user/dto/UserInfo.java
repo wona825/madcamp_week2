@@ -7,6 +7,8 @@ import lombok.Data;
 @Data
 @Builder
 public class UserInfo {
+
+    private Long userId;
     private String email;
     private String nickname;
 
