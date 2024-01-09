@@ -25,13 +25,12 @@ public class UserService {
     private final AwsS3Uploader awsS3Uploader;
 
     public ModifyUser.Response modifyUser(User user, ModifyUser.Request requestBody) throws IOException {
-
         User foundUser = userRepository.findWithProfileImgById(user.getId()).orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
         if (requestBody.getNickname() != null) {
             foundUser.setNickname(requestBody.getNickname());
         }
 
-        if (!Objects.requireNonNull(requestBody.getProfileImg().getOriginalFilename()).isEmpty()) {
+        if (requestBody.getProfileImg() != null) {
             if (foundUser.getProfileImgUrl() != null) {
                 foundUser.deleteProfileImage(awsS3Uploader);
             }
@@ -53,22 +52,20 @@ public class UserService {
         }
     }
 
-    public void followUser(User user, String followedEmail) {
-        User followingUser = userRepository.findById(user.getId()).orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
+    public void followUser(User user, Long followedUserId) {
+        User followedUser = userRepository.findById(followedUserId).orElseThrow(() -> new RuntimeException("팔로우 대상을 찾을 수 없습니다."));
 
-        User followedUser = userRepository.findByEmail(followedEmail).orElseThrow(() -> new RuntimeException("팔로우 대상을 찾을 수 없습니다."));
-
-        if (followingUser.equals(followedUser)) {
+        if (user.equals(followedUser)) {
             throw new RuntimeException("유저 본인은 팔로우할 수 없습니다.");
         }
 
-        if (followRepository.findByFollowingAndFollowed(followingUser, followedUser).isPresent()) {
+        if (followRepository.findByFollowingAndFollowedId(user, followedUserId).isPresent()) {
             throw new RuntimeException("이미 팔로우 중인 유저입니다.");
         }
 
         // Follow 생성
         Follow follow = Follow.builder()
-                .following(followingUser)
+                .following(user)
                 .followed(followedUser)
                 .build();
 
@@ -76,23 +73,18 @@ public class UserService {
         followRepository.save(follow);
     }
 
-    public void unFollowUser(User user, String followedEmail) {
-        User followingUser = userRepository.findById(user.getId()).orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
-
-        User followedUser = userRepository.findByEmail(followedEmail).orElseThrow(() -> new RuntimeException("팔로우 대상을 찾을 수 없습니다."));
-
-        followRepository.delete(followRepository.findByFollowingAndFollowed(followingUser, followedUser)
+    public void unFollowUser(User user, Long followedUserId) {
+        followRepository.delete(followRepository.findByFollowingAndFollowedId(user, followedUserId)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 팔로우 입니다.")));
     }
 
 
     public List<UserInfo> getFollowList(User user) {
-        User foundUser = userRepository.findById(user.getId()).orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
-
-        List<Follow> follows = followRepository.findByFollowingWithFollowed(foundUser);
+        List<Follow> follows = followRepository.findByFollowingWithFollowed(user);
 
         List<UserInfo> followList = follows.stream().map(follow ->
                     UserInfo.builder()
+                            .userId(follow.getFollowed().getId())
                             .email(follow.getFollowed().getEmail())
                             .nickname(follow.getFollowed().getNickname())
                             .profileImg(follow.getFollowed().getProfileImgUrl())
@@ -103,14 +95,12 @@ public class UserService {
     }
 
 
-    public List<UserInfo> getUserListBySearch(User user, String search) {
-
-        userRepository.findById(user.getId()).orElseThrow(() -> new RuntimeException("접근 유저를 찾을 수 없습니다."));
-
+    public List<UserInfo> getUserListBySearch(String search) {
         List<User> usersBySearch = userRepository.findBySearch(search);
 
         List<UserInfo> userList = usersBySearch.stream().map(userBySearch ->
                 UserInfo.builder()
+                        .userId(userBySearch.getId())
                         .email(userBySearch.getEmail())
                         .nickname(userBySearch.getNickname())
                         .profileImg(userBySearch.getProfileImgUrl())

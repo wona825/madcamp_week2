@@ -33,17 +33,17 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("follow/v1")
-    public ResponseEntity<?> followUser(@AuthenticationPrincipal User user, @RequestBody Map<String, String> requestBody) {
+    @PostMapping("/follow/v1")
+    public ResponseEntity<?> followUser(@AuthenticationPrincipal User user, @RequestParam Long followedUserId) {
 
-        userService.followUser(user, requestBody.get("followedEmail"));
+        userService.followUser(user, followedUserId);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/unFollow/v1")
-    public ResponseEntity<?> unFollowUser(@AuthenticationPrincipal User user, @RequestBody Map<String, String> requestBody) {
+    public ResponseEntity<?> unFollowUser(@AuthenticationPrincipal User user, @RequestParam Long followedUserId) {
 
-        userService.unFollowUser(user, requestBody.get("followedEmail"));
+        userService.unFollowUser(user, followedUserId);
         return ResponseEntity.ok().build();
     }
 
@@ -57,7 +57,7 @@ public class UserController {
     @GetMapping("/search/v1")
     public ResponseEntity<?> getUserListBySearch(@AuthenticationPrincipal User user, @RequestParam(required = false) String search) {
 
-        List<UserInfo> userList = userService.getUserListBySearch(user, search);
+        List<UserInfo> userList = userService.getUserListBySearch(search);
         return ResponseEntity.ok(userList);
     }
 }
