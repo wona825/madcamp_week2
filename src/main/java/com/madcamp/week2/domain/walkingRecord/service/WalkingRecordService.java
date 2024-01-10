@@ -103,6 +103,7 @@ public class WalkingRecordService {
             throw new RuntimeException("본인이 아닌 것으로 확인되어 삭제 권한이 없습니다.");
         }
 
+        locationRepository.deleteAll(walkingRecord.getLocations());
         walkingRecordRepository.delete(walkingRecord);
     }
 }
