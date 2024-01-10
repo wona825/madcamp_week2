@@ -19,4 +19,7 @@ public class SocialAuthenticationResponse {
 
     @JsonProperty("profile_img")
     private String profileImg;
+
+    @JsonProperty("walking_count")
+    private Long walkingCount;
 }

@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Optional;
 
 @Service
@@ -77,6 +79,9 @@ public class CustomKakaoService {
                 .email(user.getEmail())
                 .profileImg(profileImg2 == null ? null : profileImg2.getUploadFileUrl())
                 .isRegistered(isRegistered)
+                .walkingCount(user.getWalkingRecords().stream().map(
+                        record -> record.getWalkingStartDateTime().isAfter(LocalDateTime.now().minusDays(7))
+                ).count())
                 .build();
     }
 
