@@ -54,6 +54,7 @@ public class CustomKakaoService {
                     .nickname(nickname)
                     .profileImg(profileImg1)
                     .password(null)
+                    .walkingRecords(Collections.emptyList())
                     .build();
             userRepository.save(user);
             isRegistered = false;
@@ -72,6 +73,7 @@ public class CustomKakaoService {
         saveUserToken(user, jwtToken);
 
         ProfileImg profileImg2 = user.getProfileImg();
+
 
         return SocialAuthenticationResponse.builder()
                 .accessToken(jwtToken)
