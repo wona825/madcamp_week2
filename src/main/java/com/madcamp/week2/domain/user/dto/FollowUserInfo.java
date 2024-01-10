@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder
-public class UserInfo {
+public class FollowUserInfo {
 
     private Long userId;
     private String email;
@@ -16,4 +16,7 @@ public class UserInfo {
 
     @JsonProperty("profile_img_url")
     private String profileImg;
+
+    @JsonProperty("walking_start_date_time")
+    private LocalDateTime walkingStartDateTime;
 }

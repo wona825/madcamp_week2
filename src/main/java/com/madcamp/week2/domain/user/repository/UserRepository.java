@@ -15,6 +15,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u LEFT JOIN FETCH u.profileImg WHERE u.id = :userId")
     Optional<User> findWithProfileImgById(@Param("userId") Long userId);
 
-    @Query("SELECT u FROM User u lEFT JOIN FETCH u.profileImg WHERE (:search IS NULL OR u.email LIKE %:search% OR u.nickname LIKE %:search%)")
+    @Query("SELECT u FROM User u LEFT JOIN FETCH u.profileImg WHERE (:search IS NULL OR u.email LIKE %:search% OR u.nickname LIKE %:search%)")
     List<User> findBySearch(@Param("search") String search);
 }

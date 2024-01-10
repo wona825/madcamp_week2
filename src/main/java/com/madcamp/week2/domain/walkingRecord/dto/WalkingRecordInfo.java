@@ -12,6 +12,9 @@ import java.util.List;
 @AllArgsConstructor
 public class WalkingRecordInfo {
 
+    @JsonProperty("walking_record_id")
+    private Long walkingRecordId;
+
     @JsonProperty("location_list")
     private List<Location> locationList;
 

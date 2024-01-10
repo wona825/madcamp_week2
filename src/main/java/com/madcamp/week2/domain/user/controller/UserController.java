@@ -1,5 +1,6 @@
 package com.madcamp.week2.domain.user.controller;
 
+import com.madcamp.week2.domain.user.dto.FollowUserInfo;
 import com.madcamp.week2.domain.user.dto.UserInfo;
 import com.madcamp.week2.domain.user.dto.ModifyUser;
 import com.madcamp.week2.domain.user.entity.User;
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/user")
@@ -50,14 +50,14 @@ public class UserController {
     @GetMapping("/follow/list/v1")
     public ResponseEntity<?> getFollowerList(@AuthenticationPrincipal User user) {
 
-        List<UserInfo> followList = userService.getFollowList(user);
+        List<FollowUserInfo> followList = userService.getFollowList(user);
         return ResponseEntity.ok(followList);
     }
 
     @GetMapping("/search/v1")
     public ResponseEntity<?> getUserListBySearch(@AuthenticationPrincipal User user, @RequestParam(required = false) String search) {
 
-        List<UserInfo> userList = userService.getUserListBySearch(search);
+        List<UserInfo> userList = userService.getUserListBySearch(user, search);
         return ResponseEntity.ok(userList);
     }
 }

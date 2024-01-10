@@ -2,7 +2,6 @@ package com.madcamp.week2.domain.walkingRecord.service;
 
 import com.madcamp.week2.domain.user.entity.User;
 import com.madcamp.week2.domain.user.repository.FollowRepository;
-import com.madcamp.week2.domain.user.repository.UserRepository;
 import com.madcamp.week2.domain.walkingRecord.dto.WalkingRecordInfo;
 import com.madcamp.week2.domain.walkingRecord.entity.Location;
 import com.madcamp.week2.domain.walkingRecord.entity.WalkingRecord;
@@ -57,6 +56,7 @@ public class WalkingRecordService {
 
         List<WalkingRecordInfo> walkingRecordInfos = walkingRecords.stream().map(record ->
                 WalkingRecordInfo.builder()
+                        .walkingRecordId(record.getId())
                         .walkingDistance(record.getWalkingDistance())
                         .walkingStartDateTime(record.getWalkingStartDateTime())
                         .totalWalkingTime(record.getTotalWalkingTime())
@@ -79,6 +79,7 @@ public class WalkingRecordService {
 
         List<WalkingRecordInfo> walkingRecordInfos = walkingRecords.stream().map(record ->
                 WalkingRecordInfo.builder()
+                        .walkingRecordId(record.getId())
                         .walkingDistance(record.getWalkingDistance())
                         .walkingStartDateTime(record.getWalkingStartDateTime())
                         .totalWalkingTime(record.getTotalWalkingTime())
@@ -95,7 +96,13 @@ public class WalkingRecordService {
         return walkingRecordInfos;
     }
 
+    public void deleteWalkingRecord(User user, Long walkingRecordId) {
+        WalkingRecord walkingRecord = walkingRecordRepository.findById(walkingRecordId).orElseThrow(() -> new RuntimeException("해당 산책 기록을 찾을 수 없습니다."));
 
+        if (!walkingRecord.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("본인이 아닌 것으로 확인되어 삭제 권한이 없습니다.");
+        }
 
-
+        walkingRecordRepository.delete(walkingRecord);
+    }
 }

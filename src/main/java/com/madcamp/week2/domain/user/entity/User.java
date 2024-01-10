@@ -1,5 +1,6 @@
 package com.madcamp.week2.domain.user.entity;
 
+import com.madcamp.week2.domain.walkingRecord.entity.WalkingRecord;
 import com.madcamp.week2.global.auth.local.data.Token;
 import com.madcamp.week2.global.common.BaseEntity;
 import com.madcamp.week2.global.s3.AwsS3Uploader;
@@ -43,6 +44,9 @@ public class User extends BaseEntity implements UserDetails {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "profile_img_id")
     protected ProfileImg profileImg;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    protected List<WalkingRecord> walkingRecords;
 
     //============ UserDetail Method ============//
 

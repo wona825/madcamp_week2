@@ -43,5 +43,12 @@ public class WalkingRecordController {
         List<WalkingRecordInfo> walkingRecordInfos = walkingRecordService.getMyWalkingRecordList(user);
         return ResponseEntity.ok(walkingRecordInfos);
     }
+
+    @DeleteMapping("/delete/v1")
+    public ResponseEntity<?> deleteWalkingRecord(@AuthenticationPrincipal User user, @RequestParam Long walkingRecordId) {
+
+        walkingRecordService.deleteWalkingRecord(user, walkingRecordId);
+        return ResponseEntity.ok(null);
+    }
 }
 

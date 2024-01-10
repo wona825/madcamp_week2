@@ -1,5 +1,6 @@
 package com.madcamp.week2.domain.user.service;
 
+import com.madcamp.week2.domain.user.dto.FollowUserInfo;
 import com.madcamp.week2.domain.user.dto.UserInfo;
 import com.madcamp.week2.domain.user.dto.ModifyUser;
 import com.madcamp.week2.domain.user.entity.Follow;
@@ -7,13 +8,16 @@ import com.madcamp.week2.domain.user.entity.ProfileImg;
 import com.madcamp.week2.domain.user.entity.User;
 import com.madcamp.week2.domain.user.repository.FollowRepository;
 import com.madcamp.week2.domain.user.repository.UserRepository;
+import com.madcamp.week2.domain.walkingRecord.entity.WalkingRecord;
 import com.madcamp.week2.global.s3.AwsS3Uploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+
 
 @Service
 @RequiredArgsConstructor
@@ -55,7 +59,7 @@ public class UserService {
     public void followUser(User user, Long followedUserId) {
         User followedUser = userRepository.findById(followedUserId).orElseThrow(() -> new RuntimeException("팔로우 대상을 찾을 수 없습니다."));
 
-        if (user.equals(followedUser)) {
+        if (user.getId().equals(followedUserId)) {
             throw new RuntimeException("유저 본인은 팔로우할 수 없습니다.");
         }
 
@@ -79,15 +83,23 @@ public class UserService {
     }
 
 
-    public List<UserInfo> getFollowList(User user) {
+    public List<FollowUserInfo> getFollowList(User user) {
         List<Follow> follows = followRepository.findByFollowingWithFollowed(user);
 
-        List<UserInfo> followList = follows.stream().map(follow ->
-                    UserInfo.builder()
+        List<FollowUserInfo> followList = follows.stream().map(follow ->
+
+                    FollowUserInfo.builder()
                             .userId(follow.getFollowed().getId())
                             .email(follow.getFollowed().getEmail())
                             .nickname(follow.getFollowed().getNickname())
                             .profileImg(follow.getFollowed().getProfileImgUrl())
+                            .walkingStartDateTime(
+                                    follow.getFollowed().getWalkingRecords().stream()
+                                            .map(WalkingRecord::getWalkingStartDateTime)
+                                            .filter(Objects::nonNull)
+                                            .max(Comparator.naturalOrder())
+                                            .orElse(null)
+                            )
                             .build()
         ).toList();
 
@@ -95,16 +107,18 @@ public class UserService {
     }
 
 
-    public List<UserInfo> getUserListBySearch(String search) {
+    public List<UserInfo> getUserListBySearch(User user, String search) {
         List<User> usersBySearch = userRepository.findBySearch(search);
 
-        List<UserInfo> userList = usersBySearch.stream().map(userBySearch ->
-                UserInfo.builder()
-                        .userId(userBySearch.getId())
-                        .email(userBySearch.getEmail())
-                        .nickname(userBySearch.getNickname())
-                        .profileImg(userBySearch.getProfileImgUrl())
-                        .build()
+        List<UserInfo> userList = usersBySearch.stream()
+                .filter(userBySearch -> !Objects.equals(userBySearch.getId(), user.getId()))
+                .map(userBySearch ->
+                    UserInfo.builder()
+                            .userId(userBySearch.getId())
+                            .email(userBySearch.getEmail())
+                            .nickname(userBySearch.getNickname())
+                            .profileImg(userBySearch.getProfileImgUrl())
+                            .build()
         ).toList();
 
         return userList;
