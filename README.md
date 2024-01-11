@@ -57,3 +57,6 @@ https://github.com/udong1/madcamp2_FE/assets/81519167/78ba2d41-0ac5-4f10-8466-04
 [app-release.apk.zip](https://github.com/udong1/madcamp2_FE/files/13887250/app-release.apk.zip)
 
 
+## E. Android 개발 링크
+https://github.com/udong1/madcamp2_FE.git
+
